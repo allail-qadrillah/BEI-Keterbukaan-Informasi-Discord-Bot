@@ -60,14 +60,19 @@ class IDXDiscordBot:
         # Fetch data from API
         api_data, status_code = self.api_client.fetch_announcements(keyword)
 
-        if status_code == 403 and self.error_403_state == False:
+        if self.error_403_state:
+            logger.warning(f"Skipping {keyword} because Cloudflare bypass already failed earlier.")
+            return 0
+        
+        if status_code == 403:
+            self.error_403_state = True
             await self.discord_handler.send_error_message(
                 channel="Error",
                 error_message=f"Cannot Bypass Cloudflare when get {keyword}: Status Code 403"
             )
-            self.error_403_state = True
             logger.error(f"Cannot bypass Cloudflare for keyword: {keyword}")
             return 0
+        
         elif status_code != 200:
             await self.discord_handler.send_error_message(
                 channel="Error",
