@@ -41,6 +41,7 @@ class IDXDiscordBot:
             channel_mapping=self.config.CHANNEL_MAPPING,
             database_handler=self.database_handler
         )
+        self.error_403_state = False  # Track 403 error state
     
     async def process_keyword(self, keyword: str, keyword_config) -> int:
         """
@@ -57,12 +58,13 @@ class IDXDiscordBot:
         
         # Fetch data from API
         api_data, status_code = self.api_client.fetch_announcements(keyword)
-        
-        if status_code == 403:
+
+        if status_code == 403 and self.error_403_state == False:
             await self.discord_handler.send_error_message(
                 channel="Error",
                 error_message=f"Cannot Bypass Cloudflare when get {keyword}: Status Code 403"
             )
+            self.error_403_state = True
             logger.error(f"Cannot bypass Cloudflare for keyword: {keyword}")
             return 0
         elif status_code != 200:

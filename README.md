@@ -11,6 +11,7 @@ Bot Discord untuk monitoring pengumuman dari Bursa Efek Indonesia (IDX) dengan f
 - Pengiriman ke channel Discord yang sesuai
 - Format pesan terstruktur dengan link attachment
 - Menyimpan pesan ke supabase dan tidak akan mengirimkan pesan duplikasi
+- Mengirimkan pesan error ke channel
 
 ## Struktur Project
 
