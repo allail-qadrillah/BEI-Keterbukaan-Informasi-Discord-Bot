@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class IDXAPIClient:
     """Client for interacting with IDX API using CloudScraper"""
 
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str, proxy: Optional[str] = None):
         """
         Initialize API client
 
@@ -23,6 +23,13 @@ class IDXAPIClient:
         self.scraper = cloudscraper.create_scraper(
             browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
         )
+        
+        # Set proxy if provided
+        if proxy:
+            self.scraper.proxies = {
+                "http": proxy,
+                "https": proxy
+            }
 
     def fetch_announcements(self, keyword: str) -> Optional[Dict]:
         """

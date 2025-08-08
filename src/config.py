@@ -57,3 +57,6 @@ class Config:
         
         "Error": "error-logs"
     }
+
+    # Proxy settings
+    PROXY = os.getenv('PROXY')

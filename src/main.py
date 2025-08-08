@@ -25,6 +25,7 @@ class IDXDiscordBot:
         self.config = Config()
         self.api_client = IDXAPIClient(
             base_url=self.config.IDX_API_URL,
+            # proxy=self.config.PROXY if hasattr(self.config, 'PROXY') else None
         )
         self.message_parser = MessageParser()
         
