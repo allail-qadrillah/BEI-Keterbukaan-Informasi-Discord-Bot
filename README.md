@@ -1,80 +1,104 @@
-# IDX Discord Bot
+<div align="center">
 
-Bot Discord untuk monitoring pengumuman dari Bursa Efek Indonesia (IDX) dengan filter keyword tertentu.
+# 📊 IDX Discord Bot
 
-## Fitur
+*Bot Discord untuk monitoring pengumuman keterbukaan informasi dari Bursa Efek Indonesia*
 
-- Monitoring otomatis pengumuman IDX setiap 6 jam
-- Filter keyword: "Pengambilalihan", "Penjelasan atas Pemberitaan Media Massa", "Negosiasi" 
-- Exclude "Pasar Negosiasi" dari filter "Negosiasi"
-- Anti-duplicate message system
-- Pengiriman ke channel Discord yang sesuai
-- Format pesan terstruktur dengan link attachment
-- Menyimpan pesan ke supabase dan tidak akan mengirimkan pesan duplikasi
-- Mengirimkan pesan error ke channel
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Discord](https://img.shields.io/badge/Discord-Bot-7289da.svg)](https://discord.com)
+[![AWS Lambda](https://img.shields.io/badge/AWS-Lambda-orange.svg)](https://aws.amazon.com/lambda/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Struktur Project
+</div>
+
+## 🎯 **Tentang Proyek**
+
+Bot Discord ini dirancang untuk memantau pengumuman keterbukaan informasi dari Bursa Efek Indonesia (IDX) berdasarkan kata kunci tertentu yang dapat memengaruhi pergerakan harga saham.
+
+## 📈 **Latar Belakang**
+
+Pergerakan harga saham umumnya dipengaruhi oleh dua emosi utama: **_greed_** (keserakahan/optimisme) dan **_fear_** (ketakutan/pesimisme). Salah satu penyebab kenaikan harga saham yang signifikan adalah adanya rencana pembelian atau pengambilalihan oleh pihak lain. Aksi ini dapat membawa perubahan besar pada arah bisnis emiten — baik menuju perkembangan positif maupun sekadar menjadikannya sebagai "cangkang" untuk menyuntikkan aset dan mengakses pasar modal.
+
+Masalahnya, informasi seperti ini sering kali sudah diketahui lebih dahulu oleh pihak tertentu (*insider*). Mereka terkadang melakukan akumulasi saham pada harga rendah sebelum informasi resmi dirilis di keterbukaan informasi BEI. Ketika berita resmi keluar, barulah pasar merespons dan harga saham melonjak. Fenomena ini dikenal sebagai **Akuisisi** atau **Backdoor Listing**, dengan contoh kasus pada saham ARTO, PANI, KARW, dan PACK.
+
+### 💡 **Peluang untuk Investor Retail**
+
+Sebagai investor retail, kita memang tidak dapat bertindak selayaknya para insider yang memiliki informasi lebih awal. Namun, kita masih memiliki kesempatan untuk mendapatkan keuntungan dengan memantau Keterbukaan Informasi BEI.
+
+Keuntungannya adalah cakupan informasi yang lebih luas. Para insider umumnya hanya memiliki informasi spesifik untuk emiten tertentu saja, tidak untuk seluruh pasar. Sementara itu, platform Keterbukaan Informasi BEI menyediakan informasi untuk semua emiten yang terdaftar.
+
+Tantangannya adalah tidak praktis untuk memantau platform tersebut setiap hari secara manual. Oleh karena itu, bot ini dikembangkan untuk melakukan monitoring secara otomatis berdasarkan kata kunci tertentu yang telah ditentukan, sehingga kita dapat memanfaatkan peluang yang ada dengan lebih efisien.
+
+## ✨ **Fitur Utama**
+
+- 🔄 **Monitoring otomatis** pengumuman IDX setiap jam
+- 🎯 **Filter kata kunci**: seperti "Pengambilalihan", "Penjelasan atas Pemberitaan Media Massa", "Negosiasi"
+- ❌ **Pengecualian** "Pasar Negosiasi" dari filter "Negosiasi"
+- 🚫 **Sistem anti-duplikasi** pesan
+- 📨 **Pengiriman otomatis** ke channel Discord yang sesuai
+- 📝 **Format pesan terstruktur** dengan tautan attachment
+- 💾 **Penyimpanan data** ke Supabase untuk mencegah duplikasi
+- ⚠️ **Notifikasi error** ke channel khusus
+
+## 📁 **Struktur Proyek**
 
 ```
 idx-discord-bot/
 ├── src/
 │   ├── __init__.py
-│   ├── config.py          # Konfigurasi aplikasi
-│   ├── api_client.py      # Client untuk IDX API
-│   ├── message_parser.py  # Parser untuk processing pesan
-│   ├── discord_handler.py # Handler Discord bot
-│   └── main.py           # Logic utama aplikasi
-├── tests/
-│   ├── __init__.py
-│   ├── test_api_client.py
-│   ├── test_message_parser.py
-│   └── test_discord_handler.py
-├── lambda_function.py    # Entry point untuk AWS Lambda
-├── requirements.txt      # Dependencies
+│   ├── config.py           # Konfigurasi aplikasi
+│   ├── api_client.py       # Client untuk IDX API
+│   ├── message_parser.py   # Parser untuk pemrosesan pesan
+│   ├── discord_handler.py  # Handler Discord bot
+│   ├── database_handler.py # Handler Supabase
+│   └── main.py             # Logika utama aplikasi
+├── lambda_function.py      # Entry point untuk AWS Lambda
+├── requirements.txt        # Dependencies
 └── README.md
 ```
 
-## Setup Discord Bot
+## 🚀 **Setup Discord Bot**
 
-### 1. Buat Discord Application & Bot
+### 1️⃣ **Buat Discord Application & Bot**
 
 1. Kunjungi [Discord Developer Portal](https://discord.com/developers/applications)
-2. Klik "New Application" dan beri nama (misal: "IDX Monitor Bot")
-3. Di sidebar kiri, pilih "Bot"
-4. Di bagian "Token", klik "Copy" untuk mendapatkan bot token
-5. **Simpan token ini dengan aman - jangan dibagikan!**
+2. Klik "**New Application**" dan beri nama (contoh: "IDX Monitor Bot")
+3. Di sidebar kiri, pilih "**Bot**"
+4. Di bagian "**Token**", klik "Copy" untuk mendapatkan bot token
+5. ⚠️ **Simpan token ini dengan aman - jangan dibagikan!**
 
-### 2. Set Bot Permissions
+### 2️⃣ **Atur Izin Bot**
 
-1. Di halaman Bot, scroll ke "Privileged Gateway Intents"
+1. Di halaman Bot, scroll ke "**Privileged Gateway Intents**"
 2. Aktifkan:
-   - Message Content Intent (jika diperlukan)
-   - Server Members Intent (opsional)
-3. Di sidebar, pilih "OAuth2" > "URL Generator"
-4. Pilih scopes:
-   - `bot`
+   - ✅ Message Content Intent (jika diperlukan)
+   - ✅ Server Members Intent (opsional)
+3. Di sidebar, pilih "**OAuth2**" > "**URL Generator**"
+4. Pilih scopes: `bot`
 5. Pilih bot permissions:
-   - Send Messages
-   - View Channels
-   - Read Message History
-6. Copy generated URL dan buka di browser untuk invite bot ke server
+   - ✅ Send Messages
+   - ✅ View Channels
+   - ✅ Read Message History
+6. Salin URL yang dihasilkan dan buka di browser untuk mengundang bot ke server
 
-### 3. Setup Server Discord
+### 3️⃣ **Setup Server Discord**
 
-1. Buat channels sesuai mapping di config:
+1. Buat channel sesuai mapping di konfigurasi:
    - `pengambilalihan-alerts`
-   - `pemberitaan-media-massa-alerts` 
+   - `pemberitaan-media-massa-alerts`
    - `negosiasi-alerts`
-2. Pastikan bot memiliki permission untuk:
-   - View Channel
-   - Send Messages
-   - Read Message History
+2. Pastikan bot memiliki izin untuk:
+   - ✅ View Channel
+   - ✅ Send Messages  
+   - ✅ Read Message History
 3. Catat Guild ID server:
-   - Enable Developer Mode di Discord
+   - Aktifkan Developer Mode di Discord
    - Klik kanan nama server > Copy ID
 
-### 4. Setup Supabase
-1. Login Ke supabase, lalu buat project baru dan jalankan perintah ini pada SQL Editor
+### 4️⃣ **Setup Supabase**
+
+1. Login ke Supabase, kemudian buat proyek baru dan jalankan perintah berikut pada SQL Editor:
+
    ```sql
    -- Create table for storing sent messages
    CREATE TABLE IF NOT EXISTS sent_messages (
@@ -105,10 +129,12 @@ idx-discord-bot/
    COMMENT ON COLUMN sent_messages.announcement_date IS 'Original announcement date from IDX';
    COMMENT ON COLUMN sent_messages.sent_at IS 'Timestamp when message was sent to Discord';
    ```
-2. Buka Project Overview dan dapatkan `Project URL` dan `API KEY`
-### 5. Environment Variables
 
-Buat file `.env` atau set environment variables:
+2. Buka Project Overview dan dapatkan `Project URL` dan `API KEY`
+
+### 5️⃣ **Environment Variables**
+
+Buat file `.env` atau atur environment variables:
 
 ```env
 DISCORD_TOKEN=your_bot_token_here
@@ -117,86 +143,135 @@ SUPABASE_URL=your_supabase_project_url_here
 SUPABASE_SERVICE_KEY=your_supabase_api_key_here
 ```
 
-## Installation & Usage
+## 💻 **Instalasi & Penggunaan**
 
-### Local Development
+### **Development Lokal**
 
-1. Clone repository:
-```bash
-git clone <repository-url>
-cd idx-discord-bot
-```
+1. **Clone repository:**
+   ```bash
+   git clone <repository-url>
+   cd idx-discord-bot
+   ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3. Set environment variables:
-```bash
-export DISCORD_TOKEN="your_bot_token"
-export DISCORD_GUILD_ID="your_guild_id"
-```
+3. **Atur environment variables:**
+   ```bash
+   export DISCORD_TOKEN="your_bot_token"
+   export DISCORD_GUILD_ID="your_guild_id"
+   ```
 
-4. Run bot:
-```bash
-python src/main.py
-```
+4. **Jalankan bot:**
+   ```bash
+   python src/main.py
+   ```
 
-### Testing
+## ☁️ **AWS Lambda Deployment**
 
-Run tests dengan pytest:
+Deployment ke AWS Lambda memerlukan server proxy agar tidak diblokir oleh situs IDX (status 403). Oleh karena itu, siapkan domain proxy dan masukkan pada Environment Variable dengan nama `PROXY`, kemudian *uncomment* pada file `main.py` baris 28.
 
-```bash
-# Run all tests
-pytest tests/
+### **Deployment Manual**
 
-# Run specific test file
-pytest tests/test_message_parser.py
+1. **Siapkan deployment package:**
+   ```bash
+   # Create deployment directory
+   mkdir deployment
+   cd deployment
 
-# Run with coverage
-pytest tests/ --cov=src
+   # Copy source code
+   cp -r ../src .
+   cp ../lambda_function.py .
 
-# Run with verbose output
-pytest tests/ -v
-```
+   # Install dependencies
+   pip install -r ../requirements.txt -t .
 
-### AWS Lambda Deployment
+   # Create zip file
+   zip -r idx-discord-bot.zip .
+   ```
 
-1. **Prepare deployment package:**
-```bash
-# Create deployment directory
-mkdir deployment
-cd deployment
-
-# Copy source code
-cp -r ../src .
-cp ../lambda_function.py .
-
-# Install dependencies
-pip install -r ../requirements.txt -t .
-
-# Create zip file
-zip -r idx-discord-bot.zip .
-```
-
-2. **Create Lambda Function:**
+2. **Buat Lambda Function:**
    - Function name: `idx-discord-bot`
    - Runtime: Python 3.9
    - Handler: `lambda_function.lambda_handler`
    - Upload zip file
 
-3. **Set Environment Variables:**
+3. **Atur Environment Variables:**
    - `DISCORD_TOKEN`: Bot token dari Discord
    - `DISCORD_GUILD_ID`: ID server Discord
 
-4. **Configure Trigger:**
+4. **Konfigurasi Trigger:**
    - EventBridge (CloudWatch Events)
    - Schedule expression: `rate(6 hours)` atau `cron(0 */6 * * ? *)`
 
-## Konfigurasi
+### **Deployment Otomatis**
 
-### Mengubah Keyword Filter
+CI/CD Pipeline AWS Lambda telah disiapkan pada file `.github/workflows/lambda.yaml` menggunakan GitHub Actions.
+
+1. **Sesuaikan nama function:**
+   - Pada `Deploy to AWS Lambda` di file `lambda.yaml`
+   - Ganti nama function sesuai dengan yang Anda miliki
+
+2. **Tambahkan AWS Credentials:**
+   - Setelah repository di-push ke GitHub, buka Settings > Secrets and variables > Actions
+   - Tambahkan variabel dengan mengklik "New repository secret":
+     - `AWS_ACCESS_KEY_ID`
+     - `AWS_SECRET_ACCESS_KEY`
+
+3. **Redeploy:**
+   - Redeploy GitHub Actions
+
+## 🖥️ **Deployment Virtual Server**
+
+Deployment pada Cloud Data Center (AWS, GCP, Azure) pasti akan mendapatkan status 403 karena IP diblokir. Oleh karena itu, jika Anda tidak memiliki domain IP server proxy, Anda dapat menggunakan Residential Virtual Server (Cloud Server Lokal).
+
+1. **Clone repository ke server dan setup virtual environment**
+
+2. **Buat file `run_bot.sh`:**
+   
+   Sesuaikan direktori dengan proyek Anda:
+   
+   ```bash
+   #!/bin/bash
+
+   LOG_FILE="/opt/try/BEI-Keterbukaan-Informasi-Discord-Bot/log-output.txt"
+   TIMESTAMP="[$(date '+%Y-%m-%d %H:%M:%S')]"
+
+   # Start log
+   echo "$TIMESTAMP Starting bot..." >> "$LOG_FILE"
+
+   # Activate virtual environment
+   source /opt/try/BEI-Keterbukaan-Informasi-Discord-Bot/venv/bin/activate
+
+   # Run the bot and capture output
+   python3 /opt/try/BEI-Keterbukaan-Informasi-Discord-Bot/src/main.py >> "$LOG_FILE" 2>&1
+   EXIT_CODE=$?
+
+   # Log result
+   if [ $EXIT_CODE -eq 0 ]; then
+      echo "$TIMESTAMP Bot ran successfully." >> "$LOG_FILE"
+   else
+      echo "$TIMESTAMP Bot failed with exit code $EXIT_CODE." >> "$LOG_FILE"
+   fi
+   ```
+
+3. **Berikan permission:**
+   ```bash
+   chmod +x /opt/try/run_bot.sh
+   ```
+
+4. **Buat cronjob:**
+   - Jalankan perintah `crontab -e`
+   - Tambahkan perintah berikut untuk dijalankan setiap 4 jam:
+     ```cron
+     0 */4 * * * /bin/bash /opt/try/BEI-Keterbukaan-Informasi-Discord-Bot/run_bot.sh >> /opt/try/BEI-Keterbukaan-Informasi-Discord-Bot/cron.log 2>&1
+     ```
+
+## ⚙️ **Konfigurasi**
+
+### **Mengubah Kata Kunci Filter**
 
 Edit file `src/config.py` di bagian `KEYWORDS`:
 
@@ -220,7 +295,7 @@ KEYWORDS = {
 }
 ```
 
-### Mengubah Channel Mapping
+### **Mengubah Channel Mapping**
 
 Edit `CHANNEL_MAPPING` di `src/config.py`:
 
@@ -233,7 +308,7 @@ CHANNEL_MAPPING = {
 }
 ```
 
-## Format Output
+## 📋 **Format Output**
 
 Bot akan mengirim pesan dengan format:
 
@@ -245,23 +320,37 @@ Bot akan mengirim pesan dengan format:
 • [Nama_File_2.pdf](https://link-to-file.com/file2.pdf)
 ```
 
-## Troubleshooting
+## 🛠️ **Troubleshooting**
 
-### Bot tidak merespons
-1. Periksa bot token sudah benar
-2. Pastikan bot sudah di-invite ke server dengan permission yang tepat
-3. Cek environment variables
+### **Bot tidak merespons**
+1. ✅ Periksa bot token sudah benar
+2. ✅ Pastikan bot sudah diundang ke server dengan izin yang tepat
+3. ✅ Periksa environment variables
 
-### Pesan tidak terkirim
-1. Periksa nama channel sudah sesuai dengan mapping
-2. Pastikan bot memiliki permission Send Messages di channel
-3. Cek log untuk error messages
+### **Pesan tidak terkirim**
+1. ✅ Periksa nama channel sudah sesuai dengan mapping
+2. ✅ Pastikan bot memiliki izin Send Messages di channel
+3. ✅ Periksa log untuk pesan error
 
-### Lambda timeout
-1. Increase timeout di Lambda configuration (default 15 menit sudah cukup)
-2. Optimasi API calls jika diperlukan
+### **Lambda timeout**
+1. ✅ Tingkatkan timeout di konfigurasi Lambda (default 15 menit sudah cukup)
+2. ✅ Optimisasi API calls jika diperlukan
 
-### Duplicate messages
-Bot otomatis check 5 pesan terakhir untuk avoid duplicate. Jika masih ada duplicate:
-1. Increase `HISTORY_LIMIT` di config
-2. Periksa logic di `check_message_exists`
+### **Requests Return 403**
+1. ✅ Gunakan Proxy
+2. ✅ Jangan deploy di Cloud Data Center seperti AWS, GCP, atau Azure
+
+### **Duplicate messages**
+Bot otomatis memeriksa 5 pesan terakhir untuk menghindari duplikasi. Jika masih ada duplikasi:
+1. ✅ Tingkatkan `HISTORY_LIMIT` di konfigurasi
+2. ✅ Periksa logika di `check_message_exists`
+
+---
+
+<div align="center">
+
+**Made with ❤️ for Indonesian Stock Market Enthusiasts**
+
+*Happy Trading! 📈*
+
+</div>
