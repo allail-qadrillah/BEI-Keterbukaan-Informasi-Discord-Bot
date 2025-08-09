@@ -60,7 +60,6 @@ class Config:
     # Keyword configurations - Easy to modify
     KEYWORDS: Dict[str, KeywordConfig] = {
         "Pengambilalihan": KeywordConfig(include=["Pengambilalihan"]),
-        "Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio": KeywordConfig(include=["Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio"]),
         "Penjelasan atas Pemberitaan Media Massa": KeywordConfig(
             include=["Penjelasan atas Pemberitaan Media Massa"]
         ),
@@ -69,7 +68,6 @@ class Config:
 
     CHANNEL_MAPPING = {
         "Pengambilalihan": "pengambilalihan-alerts",
-        "Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio": "pengambilalihan-alerts",
         "Penjelasan atas Pemberitaan Media Massa": "pemberitaan-media-massa-alerts",
         "Negosiasi": "negosiasi-alerts",
         "Error": "error-logs",
