@@ -1,62 +1,76 @@
 """
 Configuration settings for IDX Discord Bot
 """
+
+from __future__ import annotations
+
 import os
 from typing import Dict, List
 from dataclasses import dataclass
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
+
 @dataclass
 class KeywordConfig:
-    """Configuration for keyword filtering"""
     include: List[str]
     exclude: List[str] = None
-    
+
     def __post_init__(self):
         if self.exclude is None:
             self.exclude = []
 
-class Config:
-    """Main configuration class for the bot"""
-    
-    # Discord settings
-    DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-    GUILD_ID = os.getenv('DISCORD_GUILD_ID')
-    if not DISCORD_TOKEN or not GUILD_ID:
-        raise ValueError("DISCORD_TOKEN and GUILD_ID must be set in environment variables")
 
-    SUPABASE_URL = os.getenv('SUPABASE_URL')
-    SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
+class Config:
+    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+    GUILD_ID = os.getenv("DISCORD_GUILD_ID")
+    if not DISCORD_TOKEN or not GUILD_ID:
+        raise ValueError(
+            "DISCORD_TOKEN and DISCORD_GUILD_ID must be set in environment variables"
+        )
+
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
     if not SUPABASE_URL or not SUPABASE_KEY:
-        raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in environment variables")
-    
-    # API settings
-    IDX_API_URL = "https://www.idx.co.id"
-    
+        raise ValueError(
+            "SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in environment variables"
+        )
+
+    IDX_API_URL = os.getenv("IDX_API_URL", "https://www.idx.co.id")
+
+    # Fetch mode: direct / proxy / rapidapi
+    IDX_FETCH_MODE = os.getenv("IDX_FETCH_MODE", "direct")
+    PROXY = os.getenv(
+        "PROXY"
+    )  # for cloudscraper proxy string e.g. "http://username:pass@host:port"
+
+    # Example RAPIDAPI_CONFIG env: JSON string with keys url, headers (dict), extra_query (dict)
+    # e.g. RAPIDAPI_CONFIG='{"url":"https://cors-proxy4.p.rapidapi.com/","headers":{"x-rapidapi-key":"xxx","x-rapidapi-host":"cors-proxy4.p.rapidapi.com"}}'
+    rapidapi_raw = os.getenv("RAPIDAPI_CONFIG")
+    if rapidapi_raw:
+        try:
+            RAPIDAPI_CONFIG = json.loads(rapidapi_raw)
+        except Exception:
+            RAPIDAPI_CONFIG = {}
+    else:
+        RAPIDAPI_CONFIG = {}
+
     # Keyword configurations - Easy to modify
-    KEYWORDS = {
-        "Pengambilalihan": KeywordConfig(
-            include=["Pengambilalihan"]
-        ),
+    KEYWORDS: Dict[str, KeywordConfig] = {
+        "Pengambilalihan": KeywordConfig(include=["Pengambilalihan"]),
+        "Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio": KeywordConfig(include=["Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio"]),
         "Penjelasan atas Pemberitaan Media Massa": KeywordConfig(
             include=["Penjelasan atas Pemberitaan Media Massa"]
         ),
-        "Negosiasi": KeywordConfig(
-            include=["Negosiasi"],
-            exclude=["Pasar Negosiasi"]
-        )
-    }
-    
-    # Discord channel mapping
-    CHANNEL_MAPPING = {
-        "Pengambilalihan": "pengambilalihan-alerts",
-        "Penjelasan atas Pemberitaan Media Massa": "pemberitaan-media-massa-alerts",
-        "Negosiasi": "negosiasi-alerts",
-        
-        "Error": "error-logs"
+        "Negosiasi": KeywordConfig(include=["Negosiasi"], exclude=["Pasar Negosiasi"]),
     }
 
-    # Proxy settings
-    PROXY = os.getenv('PROXY')
+    CHANNEL_MAPPING = {
+        "Pengambilalihan": "pengambilalihan-alerts",
+        "Laporan Harian atas Nilai Aktiva Bersih dan Komposisi Portofolio": "pengambilalihan-alerts",
+        "Penjelasan atas Pemberitaan Media Massa": "pemberitaan-media-massa-alerts",
+        "Negosiasi": "negosiasi-alerts",
+        "Error": "error-logs",
+    }
