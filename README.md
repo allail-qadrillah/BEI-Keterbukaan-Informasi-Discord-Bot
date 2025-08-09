@@ -17,7 +17,7 @@ Bot Discord ini dirancang untuk memantau pengumuman keterbukaan informasi dari B
 
 ## 📈 **Latar Belakang**
 
-Pergerakan harga saham umumnya dipengaruhi oleh dua emosi utama: **_greed_** (keserakahan/optimisme) dan **_fear_** (ketakutan/pesimisme). Salah satu penyebab kenaikan harga saham yang signifikan adalah adanya rencana pembelian atau pengambilalihan oleh pihak lain. Aksi ini dapat membawa perubahan besar pada arah bisnis emiten — baik menuju perkembangan positif maupun sekadar menjadikannya sebagai "cangkang" untuk menyuntikkan aset dan mengakses pasar modal.
+Pergerakan harga saham umumnya dipengaruhi oleh dua emosi utama: **_greed_** (keserakahan/optimisme) dan **_fear_** (ketakutan/pesimisme). Salah satu penyebab kenaikan harga saham yang signifikan adalah adanya rencana pembelian atau pengambilalihan oleh pihak lain yang berdampak pada optimisme pasar. Aksi ini dapat membawa perubahan besar pada arah bisnis emiten — baik menuju perkembangan positif maupun sekadar menjadikannya sebagai "cangkang" untuk menyuntikkan aset dan mengakses pasar modal.
 
 Masalahnya, informasi seperti ini sering kali sudah diketahui lebih dahulu oleh pihak tertentu (*insider*). Mereka terkadang melakukan akumulasi saham pada harga rendah sebelum informasi resmi dirilis di keterbukaan informasi BEI. Ketika berita resmi keluar, barulah pasar merespons dan harga saham melonjak. Fenomena ini dikenal sebagai **Akuisisi** atau **Backdoor Listing**, dengan contoh kasus pada saham ARTO, PANI, KARW, dan PACK.
 
@@ -25,7 +25,7 @@ Masalahnya, informasi seperti ini sering kali sudah diketahui lebih dahulu oleh 
 
 Sebagai investor retail, kita memang tidak dapat bertindak selayaknya para insider yang memiliki informasi lebih awal. Namun, kita masih memiliki kesempatan untuk mendapatkan keuntungan dengan memantau Keterbukaan Informasi BEI.
 
-Keuntungannya adalah cakupan informasi yang lebih luas. Para insider umumnya hanya memiliki informasi spesifik untuk emiten tertentu saja, tidak untuk seluruh pasar. Sementara itu, platform Keterbukaan Informasi BEI menyediakan informasi untuk semua emiten yang terdaftar.
+Keuntungannya adalah cakupan informasi yang lebih luas. Para insider umumnya hanya memiliki informasi spesifik untuk emiten tertentu saja, tidak untuk seluruh emiten. Sementara itu, platform Keterbukaan Informasi BEI menyediakan informasi untuk semua emiten yang terdaftar.
 
 Tantangannya adalah tidak praktis untuk memantau platform tersebut setiap hari secara manual. Oleh karena itu, bot ini dikembangkan untuk melakukan monitoring secara otomatis berdasarkan kata kunci tertentu yang telah ditentukan, sehingga kita dapat memanfaatkan peluang yang ada dengan lebih efisien.
 
@@ -141,6 +141,7 @@ DISCORD_TOKEN=your_bot_token_here
 DISCORD_GUILD_ID=your_guild_id_here
 SUPABASE_URL=your_supabase_project_url_here
 SUPABASE_SERVICE_KEY=your_supabase_api_key_here
+IDX_FETCH_MODE=your_fetch_mode (direct / proxy / rapidapi)
 ```
 
 ## 💻 **Instalasi & Penggunaan**
@@ -171,7 +172,14 @@ SUPABASE_SERVICE_KEY=your_supabase_api_key_here
 
 ## ☁️ **AWS Lambda Deployment**
 
-Deployment ke AWS Lambda memerlukan server proxy agar tidak diblokir oleh situs IDX (status 403). Oleh karena itu, siapkan domain proxy dan masukkan pada Environment Variable dengan nama `PROXY`, kemudian *uncomment* pada file `main.py` baris 28.
+Deployment ke AWS Lambda memerlukan server proxy agar tidak diblokir oleh situs IDX (status 403). Terdapat dua metode yaitu menggunakan ip proxy ataupun menggunakan _thirdparty api_ dari [Rapid API](https://rapidapi.com/)
+
+1. IP Proxy 
+   - Siapkan domain proxy dan masukkan pada Environment Variable dengan nama `PROXY`, 
+   - Ubah Environtment Variabel `IDX_FETCH_MODE=proxy` 
+2. RapidAPI
+   - Saya menggunakan service dari [ScrapeDino](https://rapidapi.com/codeblessed-codeblessed/api/scrapedino)
+   - Subscribe servicenya dan tambahkan pada Environtment Variabel `RAPIDAPI_CONFIG={"url":"https://scrapedino.p.rapidapi.com/nonjs","headers":{"x-rapidapi-key":"your-api-key","x-rapidapi-host":"scrapedino.p.rapidapi.com", "Content-Type":"application/json"}}`
 
 ### **Deployment Manual**
 
